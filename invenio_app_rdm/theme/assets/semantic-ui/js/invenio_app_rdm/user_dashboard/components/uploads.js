@@ -34,6 +34,15 @@ import {
 import { axiosWithconfig, SearchItemCreators } from "../../utils";
 import { DashboardResultView, DashboardSearchLayoutHOC } from "./base";
 
+const statuses = {
+  in_review: { color: "yellow", title: i18next.t("In review") },
+  declined: { color: "red", title: i18next.t("Declined") },
+  expired: { color: "orange", title: i18next.t("Expired") },
+  draft_with_review: { color: "grey", title: i18next.t("Draft") },
+  draft: { color: "grey", title: i18next.t("Draft") },
+  new_version_draft: { color: "grey", title: i18next.t("New version draft") },
+};
+
 const DeleteDraftButton = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -146,6 +155,11 @@ export const RDMRecordResultsListItem = ({ result, index }) => {
       <Item.Content style={{ cursor: "default" }}>
         <Item.Extra className="labels-actions">
           {/* For reduced spacing between labels. */}
+          {result.status !== "published" && (
+            <Label size="tiny" color={statuses[result.status].color}>
+              {statuses[result.status].title}
+            </Label>
+          )}
           <Label size="tiny" color="blue">
             {publicationDate} ({version})
           </Label>
@@ -177,7 +191,9 @@ export const RDMRecordResultsListItem = ({ result, index }) => {
           )}
         </Item.Extra>
         <Item.Header as="h2">
-          <a href={viewLink}>{title}</a>
+          <div className="flex">
+            <a href={viewLink}>{title}</a>
+          </div>
         </Item.Header>
         <Item.Meta className="creatibutors">
           <SearchItemCreators creators={creators} />
